@@ -2,20 +2,11 @@
   "name": "quizmate",
   "version": "1.0.0",
   "description": "Quiz App",
-  "main": "webpack.config.js",
+  "main": "server.js",
   "author": "Matin Fazli",
   "license": "ISC",
   "dependencies": {
-    "history": "*",
-    "lodash": "^4.13.1",
-    "react": "^15.1.0",
-    "react-bootstrap": "*",
-    "react-dom": "^15.1.0",
-    "react-router": "*",
-    "react-router-bootstrap": "*",
-    "webpack": "*"
-  },
-  "devDependencies": {
+    "babel-core": "^6.7.6",
     "babel-loader": "*",
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-react-html-attrs": "*",
@@ -24,12 +15,28 @@
     "babel-preset-es2015": "*",
     "babel-preset-react": "*",
     "babel-preset-stage-0": "*",
-    "webpack-dev-server": "*"
+    "history": "*",
+    "react": "^15.1.0",
+    "react-bootstrap": "*",
+    "react-dom": "^15.1.0",
+    "react-router": "*",
+    "react-router-bootstrap": "*",
+    "webpack": "*",
+    "css-loader": "^0.23.1",
+    "express": "^4.13.4",
+    "node-sass": "^3.4.2",
+    "sass-loader": "^3.2.0",
+    "style-loader": "^0.13.1",
+    "lodash": "^4.13.1"
+  },
+  "devDependencies": {
+    "webpack-dev-middleware": "*",
+    "webpack-dev-server": "*",
+    "webpack-hot-middleware": "*"
   },
   "scripts": {
-    "build": "webpack --config ./webpack.prod.config.js --progress --colors",
-    "start": "node ./app.js",
-    "dev": "webpack-dev-server --content-base src --inline --hot --history-api-fallback",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "postinstall": "webpack -p --config webpack.prod.config.js"
   }
 }
