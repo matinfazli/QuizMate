@@ -30,6 +30,6 @@ mountNode);
 
 function logout() {
 	Auth.logout(
-		(callback) => { console.log(callback) }
+		(result) => { console.log(result) }
 	);
 }
