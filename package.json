@@ -28,6 +28,7 @@
   },
   "scripts": {
     "build": "webpack --config ./webpack.prod.config.js --progress --colors",
+    "start": "node ./app.js",
     "dev": "webpack-dev-server --content-base src --inline --hot --history-api-fallback",
     "test": "echo \"Error: no test specified\" && exit 1"
   }
