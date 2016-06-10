@@ -1,0 +1,31 @@
+{
+  "name": "quizmate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "webpack.config.js",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "babel-loader": "*",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-react-html-attrs": "*",
+    "babel-plugin-transform-class-properties": "*",
+    "babel-plugin-transform-decorators-legacy": "*",
+    "babel-preset-es2015": "*",
+    "babel-preset-react": "*",
+    "babel-preset-stage-0": "*",
+    "history": "*",
+    "lodash": "^4.13.1",
+    "react": "^15.1.0",
+    "react-bootstrap": "*",
+    "react-dom": "^15.1.0",
+    "react-router": "*",
+    "react-router-bootstrap": "*",
+    "webpack": "*",
+    "webpack-dev-server": "*"
+  },
+  "scripts": {
+    "dev": "webpack-dev-server --content-base src --inline --hot --history-api-fallback",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
