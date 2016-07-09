@@ -6,7 +6,7 @@
   "author": "Matin Fazli",
   "license": "ISC",
   "dependencies": {
-    "babel-core": "^6.7.6",
+    "babel-core": "^6.9.1",
     "babel-loader": "*",
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-react-html-attrs": "*",
@@ -24,19 +24,18 @@
     "webpack": "*",
     "css-loader": "^0.23.1",
     "express": "^4.13.4",
-    "node-sass": "^3.4.2",
+    "node-sass": "^3.7.0",
     "sass-loader": "^3.2.0",
     "style-loader": "^0.13.1",
     "lodash": "^4.13.1"
   },
   "devDependencies": {
-    "webpack-dev-middleware": "*",
-    "webpack-dev-server": "*",
-    "webpack-hot-middleware": "*"
+    "webpack-dev-server": "*"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
+    "dev": "webpack-dev-server --content-base dist --inline --hot --historyApiFallback",
     "postinstall": "webpack -p --config webpack.prod.config.js"
   }
 }

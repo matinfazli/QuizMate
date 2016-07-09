@@ -1,8 +1,13 @@
 import React from "react";
 import Auth from "../../helpers/auth";
-import { withRouter, browserHistory } from "react-router";
+import { Link, withRouter, browserHistory } from "react-router";
+import { Table, Panel } from "react-bootstrap";
 
 class Dashboard extends React.Component {
+	constructor() {
+		super();
+	}
+
 	componentWillMount() {
 		Auth.getAuth((user) => {
 			if (!user) browserHistory.push('/');
@@ -10,12 +15,17 @@ class Dashboard extends React.Component {
 	}
 
 	render() {
-		return (
-			<div class="container">
-				<h1>Dashboard</h1>
-				<h4>Make some questions here</h4>
-			</div>
-		);
+    return (
+    	<div class="dashboard">
+	    	<div class="container">
+	    		<div class="row">
+	    			<div class="col-xs-12">
+	    				<Link to="/dashboard/create" class="btn btn-success btn-block">Create a new quiz!</Link>
+	    			</div>
+	    		</div>
+	    	</div>
+    	</div>
+    );
 	};
 }
 

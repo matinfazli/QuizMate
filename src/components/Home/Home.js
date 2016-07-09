@@ -1,17 +1,25 @@
-import React from "react";
-import Auth from "../../helpers/auth";
+// Modules
 import _ from "lodash";
+import React from "react";
 import { withRouter, browserHistory } from "react-router";
 
 // Components
 import QuizCard from "./QuizCard";
 
-var firebaseRef = firebase.database().ref('quiz-list/');
+// Others
+import Auth from "../../helpers/auth";
+import Spinner from "../_/Spinner/Spinner";
+
+
+var firebaseRef = firebase.database().ref('quiz-feed/');
 
 class Home extends React.Component {
 	constructor() {
 		super();
-		this.state = {'quizes': null}
+		this.state = {
+			'spinner': true,
+			'quizes': null
+		}
 	}
 
 	componentWillMount() {
@@ -27,7 +35,10 @@ class Home extends React.Component {
 
 	attachFirebase() {
 		firebaseRef.on('value', function(data) {
-		  this.setState({'quizes': data.val()});
+		  this.setState({
+		  	'spinner': false,
+		  	'quizes': data.val()
+		  });
 		}.bind(this));
 	}
 
@@ -36,18 +47,23 @@ class Home extends React.Component {
   }
 
 	render() {
-		var createQuiz = (quizData, quizName) => {
-      return <QuizCard key={quizName} name={quizName} data={quizData} />;
-    };
+		var quizFeed = (quizData, quizName) => {
+      return (<QuizCard key={quizName} name={quizName} data={quizData} />);
+    }
 
-		return (
-			<div class="container">
-				<div class="row">
-					{_.map(this.state.quizes, (quizData, quizName) => { return createQuiz(quizData, quizName) })}
+    if (this.state.spinner) {
+    	return ( <Spinner /> )
+    } else {
+			return (
+				<div class="container">
+					<div class="row">
+						{_.map(this.state.quizes, (quizData, quizName) => {
+							return quizFeed(quizData, quizName) 
+						})}
+					</div>
 				</div>
-			</div>
-		);
-
+			);
+		}
 	};
 }
 

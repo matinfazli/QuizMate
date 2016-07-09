@@ -2,12 +2,10 @@ var webpack = require('webpack');
 var path = require('path');
 
 module.exports = {
-  entry: [
-    './src/index'
-  ],
+  entry: "./src/index",
   module: {
     loaders: [
-      { test: /\.js?$/, loader: 'babel', exclude: /node_modules/ },
+      { test: /\.jsx?$/, loader: 'babel-loader', exclude: /node_modules/ },
       { test: /\.s?css$/, loader: 'style!css!sass' }
     ]
   },
@@ -20,11 +18,12 @@ module.exports = {
     filename: 'bundle.js'
   },
   devServer: {
+  	hot: true,
     contentBase: './dist',
-    hot: true
+    historyApiFallback: true
   },
   plugins: [
-    new webpack.optimize.OccurenceOrderPlugin(),
+    new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin()
   ]
