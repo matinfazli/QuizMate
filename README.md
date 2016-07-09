@@ -9,12 +9,12 @@ $ npm install
 
 ## 2. Run
 
-### Webpack build for development with BrowserSync
+#### Webpack build for development with BrowserSync
 ```
 $ npm run dev
 ```
 
-### Deploy stuff
+#### Deploy
 ```
 $ npm start
 ```
