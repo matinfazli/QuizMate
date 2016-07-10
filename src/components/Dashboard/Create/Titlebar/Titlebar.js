@@ -22,7 +22,7 @@ class Titlebar extends React.Component {
 	    			</div>
 	    			<div class="col-xs-2 visible-xs">
 	    				<button class="btn btn-sm btn-success btn-block" onClick={toggleSidebar}>
-	    					<i class="fa fa-cog" aria-hidden="true"></i>
+	    					<i class="fa fa-edit" aria-hidden="true"></i>
 	    				</button>
 	    			</div>
 	    		</div>

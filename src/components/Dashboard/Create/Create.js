@@ -2,6 +2,7 @@
 import _ from "lodash";
 import React from "react";
 import { Link, withRouter, browserHistory } from "react-router";
+import { Alert } from "react-bootstrap";
 
 // Components
 import Titlebar from "./Titlebar/Titlebar";
@@ -24,11 +25,13 @@ class Create extends React.Component {
 					{text:'', chk: false}
 				]
 			}],
-			sidebar: '',
+			sidebar: false,
+			alert: { title: '', text: '', color: 'danger', visible: false }
 		}
 		
 		this.handleQuizTitle = this.handleQuizTitle.bind(this);
 		this.toggleSidebar = this.toggleSidebar.bind(this);
+		this.popAlert = this.popAlert.bind(this);
 
 		this.addQuestion = this.addQuestion.bind(this);
 		this.addChoice = this.addChoice.bind(this);
@@ -38,6 +41,8 @@ class Create extends React.Component {
 		this.handleTitle = this.handleTitle.bind(this);
 		this.handleChoice = this.handleChoice.bind(this);
 		this.handleCheckbox = this.handleCheckbox.bind(this);
+
+		this.publishQuiz = this.publishQuiz.bind(this);
 	}
 
 	// Update page on prop change
@@ -50,11 +55,21 @@ class Create extends React.Component {
   	this.setState({ quizTitle: event.currentTarget.value });
   }
 
+  // Create a alert with set of data and dismiss it
+  popAlert(title, text, color) {
+  	this.setState({ alert: { title: title, text: text, color: color, visible: true } });
+  	setTimeout(()=> {
+  		this.setState({ alert: { title: '', text: '', color: 'danger', visible: false } });
+  	}, 3000);
+  }
+
   // Sidebar toggler
 	toggleSidebar() {
   	var { sidebar } = this.state;
   	// Toggle activate class
-  	this.setState({'sidebar': ((sidebar == 'active') ? '' : 'active')});
+  	this.setState({
+  		'sidebar': ((sidebar) ? false : true)
+  	});
   }
 
   // Handle question title changes
@@ -128,7 +143,11 @@ class Create extends React.Component {
   			questionList: questionList
   		});
   	} else {
-  		console.log('you need at least one question');
+  		this.popAlert(
+  			'Oops!', 
+  			'You need to have at least one question.',
+  			'danger'
+  		)
   	}
   }
 
@@ -158,7 +177,11 @@ class Create extends React.Component {
   		// Save changes
   		this.setState({ questionList: questionList });
   	} else {
-  		console.log('you need at least two choices');
+  		this.popAlert(
+  			'Oops!', 
+  			'You need to have at least two choices.',
+  			'danger'
+  		)
   	}
   }
 
@@ -174,16 +197,41 @@ class Create extends React.Component {
   	var checkbox = choiceList[targetID].chk;
   	// Set all false except the chosen one
   	if (!checkbox) {
-  		_.forEach(choiceList, function(value, key) {
+  		_.forEach(choiceList, (value, key)=> {
   			value.chk = (targetID == key) ? true : false;
 			});
   	}
+  	// Save changes
   	this.setState({ questionList: questionList });
   }
 
+  publishQuiz() {
+  	var { quizTitle, questionList } = this.state;
+  	// TODO: Verifications
+  	var QT = quizTitle.trim()
+  	if (QT) {
+  		// Setup quiz Data
+  		var quizData = {
+  			title: QT,
+  			questions: questionList
+  		}
+  		// Create a new random key
+  		var newQuizKey = firebase.database().ref().child('quizes').push().key;
+  		// Get current user id
+  		var uid = firebase.auth().currentUser.uid;
+  		// Create simultinious updates
+		  var updates = {};
+		  updates['/quizes/' + newQuizKey] = quizData;
+		  updates['/user-quizes/' + uid + '/' + newQuizKey] = quizData;
+		  // Send updates to firebase
+		  firebase.database().ref().update(updates);
+		  // Send to home (using window.location to reset)
+		  window.location = '/';
+  	}
+  }
+
 	render() {
-		//console.log(this.state);
-		var { sidebar, questionID ,questionCount, questionList } = this.state;
+		var { sidebar, alert, questionID ,questionCount, questionList } = this.state;
 
     return (
     	<div class="dashboard quiz">
@@ -196,8 +244,13 @@ class Create extends React.Component {
     		/>
 
     		<div class="container">
-    			<div class={'row row-offcanvas ' + sidebar}>
 
+    			<Alert bsStyle={alert.color} class={((alert.visible) ? '' : 'hidden')}>
+          	<h4>{alert.title}</h4>
+          	<p>{alert.text}</p>
+        	</Alert>
+
+    			<div class={'row row-offcanvas ' + ((sidebar) ? 'active' : '')}>
 		        <Main 
 		        	data={questionList[questionID - 1]}
 		        	addChoice={this.addChoice}
@@ -211,8 +264,8 @@ class Create extends React.Component {
 		        	data={questionList} 
 		        	addQuestion={this.addQuestion}
 		        	removeQuestion={this.removeQuestion}
+		        	publishQuiz={this.publishQuiz}
 		        />
-
       		</div>
     		</div>
 

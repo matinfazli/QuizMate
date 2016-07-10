@@ -33,7 +33,7 @@ class Main extends React.Component {
 						type="text"
 						value={data.title}
 						onChange={handleTitle}
-						placeholder="Question title..." 
+						placeholder="Question title..."
 					/>
 					{_.map(data.choices, function(value, key) { return choiceList(value, key) })}
 				</form>
