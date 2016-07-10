@@ -26,8 +26,7 @@ $ npm start
 # Todo
 
 ## Current
-
-...
+1. Verification when publishing quiz
 
 ## Issues
 
