@@ -105,6 +105,14 @@ html, body {
 		margin: -21px 0 20px;
 		background: #3498DB;
 
+		.counter {
+			margin: 0;
+			color: white;
+			line-height: 35px;
+			vertical-align: middle;
+			text-align: center;
+		}
+
 		input.title {
 			font-size: 18px;
 			font-weight: 600;

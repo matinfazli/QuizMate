@@ -1,6 +1,6 @@
 // Modules
 import React from "react";
-import { Router, Route, IndexRoute, browserHistory } from "react-router";
+import { Router, Route, IndexRoute, Redirect, browserHistory } from "react-router";
 
 // Routes
 import App from "./components/App";
@@ -35,7 +35,8 @@ module.exports = (
 
 			<Route path="/dashboard">
 				<IndexRoute component={Dashboard} />
-				<Route path="create" component={Create} />
+				<Redirect from="create" to="create/1" />
+				<Route path="create/:id" component={Create} />
 			</Route>
 
 		</Route>

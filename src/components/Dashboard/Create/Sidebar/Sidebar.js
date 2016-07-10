@@ -3,7 +3,7 @@ import React from "react";
 import { Link, withRouter, browserHistory } from "react-router";
 
 // Components
-import Question from '../Add/Question';
+import Question from './AddQuestion';
 
 class Sidebar extends React.Component {
 	render() {
@@ -13,16 +13,17 @@ class Sidebar extends React.Component {
       		key={key}
       		index={key}
       		title={value}
-      		toLink={'/dashboard/create/' + (key+1)}
+      		toLink={'/dashboard/create/' + (key + 1)}
+      		remove={this.props.removeQuestion}
 				/>
       );
     }
 
     return (
     	<div class="col-xs-12 col-sm-5 sidebar-offcanvas">
-      	<button class="btn btn-success btn-block" onClick={this.addQuestion}>Add Question</button>
+      	<button class="btn btn-success btn-block" onClick={this.props.addQuestion}>Add Question</button>
       	<ol class="question-list">
-					{_.map(this.props.data, function(value, key) { return questionFeed(value, key) })}
+					{_.map(this.props.data, function(value, key) { return questionFeed(value.title, key) })}
       	</ol>
       </div>
     )

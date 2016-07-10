@@ -20,7 +20,7 @@ class Dashboard extends React.Component {
 	    	<div class="container">
 	    		<div class="row">
 	    			<div class="col-xs-12">
-	    				<Link to="/dashboard/create" class="btn btn-success btn-block">Create a new quiz!</Link>
+	    				<Link to="/dashboard/create/1" class="btn btn-success btn-block">Create a new quiz!</Link>
 	    			</div>
 	    		</div>
 	    	</div>

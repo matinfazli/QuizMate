@@ -4,66 +4,156 @@ import React from "react";
 import { Link, withRouter, browserHistory } from "react-router";
 
 // Components
-import Titlebar from "./Subs/Titlebar";
-import Sidebar from "./Subs/Sidebar";
-import Main from "./Subs/Main";
+import Titlebar from "./Titlebar/Titlebar";
+import Sidebar from "./Sidebar/Sidebar";
+import Main from "./Main/Main";
 
 class Create extends React.Component {
 	constructor() {
 		super();
 		this.state = {
-			'sidebar': '',
-			'quiz': {
-				'title': '',
-				'questions': {
-					'Which one is correct?': {
-						'a': 'foo',
-						'b': 'bar',
-						'c': 'cal'
-					},
-					'Our next question?': {
-						'a': 'foo',
-						'b': 'bar',
-						'c': 'cal'
-					}
-				}
-			}
+			questionID: 1, // Current Question ID
+			questionCount: 1, // Total Questions Count
+			quizTitle: '', // Quiz Title
+			questionList: [{ // Question List
+				title: 'Question title...', // Question Title
+				choices: ['','','',''] // Question Choices
+			}],
+			sidebar: '', // Sidebar Toggle Class
 		}
 		
-		this.handleTitle = this.handleTitle.bind(this);
+		this.handleQuizTitle = this.handleQuizTitle.bind(this);
 		this.toggleSidebar = this.toggleSidebar.bind(this);
-		this.saveData = this.saveData.bind(this);
+
+		this.addQuestion = this.addQuestion.bind(this);
+		this.addChoice = this.addChoice.bind(this);
+		this.removeQuestion = this.removeQuestion.bind(this);
+
+		this.handleTitle = this.handleTitle.bind(this);
+		this.handleChoice = this.handleChoice.bind(this);
 	}
 
-	//Ttitlebar
-	handleTitle(event) {
-  	this.saveData({ title: event.target.value });
+	componentWillReceiveProps(nextProps) {
+		this.setState({ questionID: parseInt(nextProps.params.id)});
+	}
+
+	// Handle quiz title changes
+	handleQuizTitle(event) {
+  	this.setState({ quizTitle: event.target.value });
   }
+
+  // Handle question title changes
+	handleTitle(event) {
+		var { questionID, questionList } = this.state;
+		// Get the question target
+		var { target } = event;
+		// Set it to the state
+		questionList[questionID - 1].title = target.value;
+		// Save Changes
+		this.setState({ questionList: questionList });
+  }
+
+  // Handle choice text changes
+	handleChoice(event) {
+		var { questionID, questionList } = this.state;
+		// Get the choice parent node (need its ID)
+  	var { id } = event.target;
+  	//
+  	questionList[questionID - 1].choices[id] = target.value;
+		this.setState({ questionList: questionList });
+  }
+
+  // Sidebar toggler
 	toggleSidebar() {
   	var { sidebar } = this.state;
-  	var state = (sidebar == 'active') ? '' : 'active';
-  	this.setState({'sidebar': state}); 
+  	var sidebarState = (sidebar == 'active') ? '' : 'active';
+  	// Save sidebar state
+  	this.setState({'sidebar': sidebarState});
   }
 
-  saveData(newData) {
-    this.setState({
-      quiz: Object.assign({}, this.state.quiz, newData)
-    });
+  // Add new question
+  addQuestion() {
+  	var { questionCount, questionList } = this.state;
+  	// Create a new question with four empty choices
+  	questionList.push({
+  		title: 'New question title...',
+  		choices: ['','','','']
+  	});
+  	// Save all the changes
+  	this.setState({ 
+  		questionCount: questionCount + 1, 
+  		questionList: questionList 
+  	});
   }
+
+  // Add new choice
+  addChoice() {
+  	var { questionID, questionList } = this.state;
+		// Add a new empty choice
+  	questionList[questionID - 1].choices.push('');
+  	// Save our changes
+  	this.setState({ questionList: questionList });
+  }
+
+  // Remove a question
+  removeQuestion(event) {
+  	var { params } = this.props;
+  	var { questionID, questionCount, questionList } = this.state;
+  	// Get the question parent node ID
+  	var { id } = event.target;
+  	//If total questions > 1 then remove, else throw error
+  	if (questionCount > 1 && id) {
+  		// If we are on that question either + or -
+  		// if (questionID == (id + 1)) {
+  		// 	console.log(id);
+  		// 	//(id == 0) ? params.id++ : params.id--;
+  		// }
+  		// Remove the question
+  		questionList.splice(id, 1);
+  		// Save changes
+  		this.setState({
+  			questionCount: questionCount -1,
+  			questionList: questionList
+  		});
+  	} else if(!id) {
+  		console.log('id undifined');
+  	} else {
+  		// Throw error
+  		console.log('you need at least one question');
+  	}
+  }
+ 
 
 	render() {
-		var { quiz } = this.state;
-		var questionList = Object.keys(quiz.questions);
+		var { questionID ,questionCount, questionList } = this.state;
+		console.log(this.state);
 
     return (
     	<div class="dashboard quiz">
 
-    		<Titlebar handleTitle={this.handleTitle} toggleSidebar={this.toggleSidebar} />
+    		<Titlebar 
+    			handleQuizTitle={this.handleQuizTitle}
+    			questionID={questionID}
+    			questionCount={questionCount}
+    			toggleSidebar={this.toggleSidebar}
+    		/>
 
     		<div class="container">
     			<div class={'row row-offcanvas ' + this.state.sidebar}>
-		        <Main />
-		        <Sidebar data={questionList} />
+
+		        <Main 
+		        	data={questionList[questionID - 1]}
+		        	addChoice={this.addChoice}
+		        	handleTitle={this.handleTitle}
+		        	handleChoice={this.handleChoice}
+		        />
+
+		        <Sidebar 
+		        	data={questionList} 
+		        	addQuestion={this.addQuestion}
+		        	removeQuestion={this.removeQuestion}
+		        />
+
       		</div>
     		</div>
 

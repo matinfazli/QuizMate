@@ -1,5 +1,9 @@
 # Quiz Mate
-Real-time quiz app, using React.js and Firebase.
+Quiz making & doing application using ReactJS and Firebase.
+---
+* Real-time data update using Firebase & ReactJS
+* Fully responsive using Bootstrap (and React-Bootstrap)
+
 
 ## 1. Install
 
