@@ -7,15 +7,18 @@ import Choice from './AddChoice';
 
 class Main extends React.Component {
 	render() {
-		var { data, addChoice, handleTitle, handleChoice } = this.props;
+		var { data, addChoice, removeChoice, handleTitle, handleChoice, handleCheckbox } = this.props;
 		
 		var choiceList = (value, key) => {
       return (
       	<Choice 
       		key={key}
       		index={key}
-      		value={value}
+      		value={value.text}
+      		checked={value.chk}
+      		handleCheckbox={handleCheckbox}
       		handleChoice={handleChoice}
+      		removeChoice={removeChoice}
 				/>
       );
     }

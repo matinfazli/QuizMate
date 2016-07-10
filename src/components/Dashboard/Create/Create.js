@@ -12,14 +12,19 @@ class Create extends React.Component {
 	constructor() {
 		super();
 		this.state = {
-			questionID: 1, // Current Question ID
-			questionCount: 1, // Total Questions Count
-			quizTitle: '', // Quiz Title
-			questionList: [{ // Question List
-				title: 'Question title...', // Question Title
-				choices: ['','','',''] // Question Choices
+			questionID: 1,
+			questionCount: 1,
+			quizTitle: '',
+			questionList: [{
+				title: 'Question title...',
+				choices: [
+					{text:'', chk: true},
+					{text:'', chk: false},
+					{text:'', chk: false},
+					{text:'', chk: false}
+				]
 			}],
-			sidebar: '', // Sidebar Toggle Class
+			sidebar: '',
 		}
 		
 		this.handleQuizTitle = this.handleQuizTitle.bind(this);
@@ -28,27 +33,37 @@ class Create extends React.Component {
 		this.addQuestion = this.addQuestion.bind(this);
 		this.addChoice = this.addChoice.bind(this);
 		this.removeQuestion = this.removeQuestion.bind(this);
+		this.removeChoice = this.removeChoice.bind(this);
 
 		this.handleTitle = this.handleTitle.bind(this);
 		this.handleChoice = this.handleChoice.bind(this);
+		this.handleCheckbox = this.handleCheckbox.bind(this);
 	}
 
+	// Update page on prop change
 	componentWillReceiveProps(nextProps) {
 		this.setState({ questionID: parseInt(nextProps.params.id)});
 	}
 
 	// Handle quiz title changes
 	handleQuizTitle(event) {
-  	this.setState({ quizTitle: event.target.value });
+  	this.setState({ quizTitle: event.currentTarget.value });
+  }
+
+  // Sidebar toggler
+	toggleSidebar() {
+  	var { sidebar } = this.state;
+  	// Toggle activate class
+  	this.setState({'sidebar': ((sidebar == 'active') ? '' : 'active')});
   }
 
   // Handle question title changes
 	handleTitle(event) {
 		var { questionID, questionList } = this.state;
-		// Get the question target
-		var { target } = event;
+		// Get the question input
+		var { value } = event.currentTarget;
 		// Set it to the state
-		questionList[questionID - 1].title = target.value;
+		questionList[questionID - 1].title = value;
 		// Save Changes
 		this.setState({ questionList: questionList });
   }
@@ -56,19 +71,12 @@ class Create extends React.Component {
   // Handle choice text changes
 	handleChoice(event) {
 		var { questionID, questionList } = this.state;
-		// Get the choice parent node (need its ID)
-  	var { id } = event.target;
-  	//
-  	questionList[questionID - 1].choices[id] = target.value;
+		// Get the choice input
+  	var { id, value } = event.currentTarget;
+  	// Set it to the state
+  	questionList[questionID - 1].choices[id].text = value;
+  	// Save Changes
 		this.setState({ questionList: questionList });
-  }
-
-  // Sidebar toggler
-	toggleSidebar() {
-  	var { sidebar } = this.state;
-  	var sidebarState = (sidebar == 'active') ? '' : 'active';
-  	// Save sidebar state
-  	this.setState({'sidebar': sidebarState});
   }
 
   // Add new question
@@ -77,7 +85,12 @@ class Create extends React.Component {
   	// Create a new question with four empty choices
   	questionList.push({
   		title: 'New question title...',
-  		choices: ['','','','']
+  		choices: [
+				{text:'', chk: true},
+				{text:'', chk: false},
+				{text:'', chk: false},
+				{text:'', chk: false}
+			]
   	});
   	// Save all the changes
   	this.setState({ 
@@ -90,43 +103,87 @@ class Create extends React.Component {
   addChoice() {
   	var { questionID, questionList } = this.state;
 		// Add a new empty choice
-  	questionList[questionID - 1].choices.push('');
+  	questionList[questionID - 1].choices.push({text: '', chk: false});
   	// Save our changes
   	this.setState({ questionList: questionList });
   }
 
   // Remove a question
   removeQuestion(event) {
-  	var { params } = this.props;
   	var { questionID, questionCount, questionList } = this.state;
-  	// Get the question parent node ID
-  	var { id } = event.target;
-  	//If total questions > 1 then remove, else throw error
-  	if (questionCount > 1 && id) {
-  		// If we are on that question either + or -
-  		// if (questionID == (id + 1)) {
-  		// 	console.log(id);
-  		// 	//(id == 0) ? params.id++ : params.id--;
-  		// }
+  	// Get the question ID
+  	var { id } = event.currentTarget;
+  	var targetID = parseInt(id);
+  	// If total questions > 1 then remove, else throw error
+  	if (questionCount > 1) {
+  		// Logically + or - current question and send
+  		var QID = questionID;
+  		if (QID != 1) { QID -= 1 }
+  		browserHistory.push('/dashboard/create/' + QID);
   		// Remove the question
-  		questionList.splice(id, 1);
+  		questionList.splice(targetID, 1);
   		// Save changes
   		this.setState({
-  			questionCount: questionCount -1,
+  			questionCount: questionCount - 1,
   			questionList: questionList
   		});
-  	} else if(!id) {
-  		console.log('id undifined');
   	} else {
-  		// Throw error
   		console.log('you need at least one question');
   	}
   }
- 
+
+  // Remove a choice
+  removeChoice(event) {
+  	event.preventDefault();
+  	var { questionID, questionList } = this.state;
+  	// Get the choice ID
+  	var { id } = event.currentTarget;
+  	var targetID = parseInt(id);
+  	// Count choices
+  	var choiceList = questionList[questionID - 1].choices;
+  	var choiceCount = _.size(choiceList);
+  	// If total choices > 1 then remove, else throw error
+  	if (choiceCount > 2) {
+  		// If its checkbox was checked pass it to prev or next
+  		var checked = choiceList[targetID].chk;
+  		if (checked) { 
+  			if (targetID > 0) {
+  				choiceList[targetID - 1].chk = true;
+  			} else {
+  				choiceList[targetID + 1].chk = true;
+  			}
+  		}
+  		// Remove the choice
+  		choiceList.splice(targetID, 1);
+  		// Save changes
+  		this.setState({ questionList: questionList });
+  	} else {
+  		console.log('you need at least two choices');
+  	}
+  }
+
+  // Handle choices checkbox
+  handleCheckbox(event) {
+  	var { questionID, questionList } = this.state;
+  	// Get the checkbox ID
+  	var { id } = event.currentTarget;
+  	var targetID = parseInt(id);
+  	// Get the choices list
+  	var choiceList = questionList[questionID - 1].choices;
+  	// Get the target choice checkbox element
+  	var checkbox = choiceList[targetID].chk;
+  	// Set all false except the chosen one
+  	if (!checkbox) {
+  		_.forEach(choiceList, function(value, key) {
+  			value.chk = (targetID == key) ? true : false;
+			});
+  	}
+  	this.setState({ questionList: questionList });
+  }
 
 	render() {
-		var { questionID ,questionCount, questionList } = this.state;
-		console.log(this.state);
+		//console.log(this.state);
+		var { sidebar, questionID ,questionCount, questionList } = this.state;
 
     return (
     	<div class="dashboard quiz">
@@ -139,13 +196,15 @@ class Create extends React.Component {
     		/>
 
     		<div class="container">
-    			<div class={'row row-offcanvas ' + this.state.sidebar}>
+    			<div class={'row row-offcanvas ' + sidebar}>
 
 		        <Main 
 		        	data={questionList[questionID - 1]}
 		        	addChoice={this.addChoice}
 		        	handleTitle={this.handleTitle}
 		        	handleChoice={this.handleChoice}
+		        	removeChoice={this.removeChoice}
+		        	handleCheckbox={this.handleCheckbox}
 		        />
 
 		        <Sidebar 
