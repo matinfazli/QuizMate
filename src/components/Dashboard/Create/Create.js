@@ -206,14 +206,15 @@ class Create extends React.Component {
   }
 
   publishQuiz() {
-  	var { quizTitle, questionList } = this.state;
+  	var { quizTitle, questionList,  } = this.state;
   	// TODO: Verifications
   	var QT = quizTitle.trim()
   	if (QT) {
   		// Setup quiz Data
   		var quizData = {
   			title: QT,
-  			questions: questionList
+  			questions: questionList,
+  			count: questionCount
   		}
   		// Create a new random key
   		var newQuizKey = firebase.database().ref().child('quizes').push().key;

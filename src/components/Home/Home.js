@@ -11,14 +11,14 @@ import Auth from "../../helpers/auth";
 import Spinner from "../_/Spinner/Spinner";
 
 
-var firebaseRef = firebase.database().ref('quiz-feed/');
+var firebaseRef = firebase.database().ref('quizes');
 
 class Home extends React.Component {
 	constructor() {
 		super();
 		this.state = {
 			'spinner': true,
-			'quizes': null
+			'quizes': ''
 		}
 	}
 
@@ -47,8 +47,14 @@ class Home extends React.Component {
   }
 
 	render() {
-		var quizFeed = (quizData, quizName) => {
-      return (<QuizCard key={quizName} name={quizName} data={quizData} />);
+		var quizList = (value, key) => {
+      return (
+      	<QuizCard 
+      		key={key}
+      		id={key} 
+      		data={value} 
+      	/>
+      );
     }
 
     if (this.state.spinner) {
@@ -57,9 +63,7 @@ class Home extends React.Component {
 			return (
 				<div class="container">
 					<div class="row">
-						{_.map(this.state.quizes, (quizData, quizName) => {
-							return quizFeed(quizData, quizName) 
-						})}
+						{_.map(this.state.quizes, (value, key) => { return quizList(value, key) })}
 					</div>
 				</div>
 			);
@@ -68,3 +72,7 @@ class Home extends React.Component {
 }
 
 export default withRouter(Home);
+
+						// {_.map(this.state.quizes, (quizData, quizName) => {
+						// 	return quizFeed(quizData, quizName) 
+						// })}

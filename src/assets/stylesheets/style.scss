@@ -143,13 +143,13 @@ html, body {
     top: -20px;
     right: -100vw;
     width: 100vw;
-    height: calc(100vh - 125px);
+    height: 100vh;
     padding: 20px 15px;
     background: #1A242F;
 
     .question-list {
     	overflow-y: scroll;
-    	max-height: calc(100vh - 220px);
+    	max-height: calc(100vh - 100px);
     }
   }
 
