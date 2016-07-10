@@ -206,7 +206,7 @@ class Create extends React.Component {
   }
 
   publishQuiz() {
-  	var { quizTitle, questionList,  } = this.state;
+  	var { quizTitle, questionList, questionCount } = this.state;
   	// TODO: Verifications
   	var QT = quizTitle.trim()
   	if (QT) {
